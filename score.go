@@ -22,6 +22,7 @@ var scoreMap = map[string]int{
 	"6:3": 600,
 
 	// 4 of a kinds
+	"1:4": 2000,
 	"2:4": 400,
 	"3:4": 600,
 	"4:4": 800,
@@ -29,6 +30,7 @@ var scoreMap = map[string]int{
 	"6:4": 1200,
 
 	// 5 of a kinds
+	"1:5": 3000,
 	"2:5": 800,
 	"3:5": 1200,
 	"4:5": 1600,
@@ -36,6 +38,7 @@ var scoreMap = map[string]int{
 	"6:5": 2400,
 
 	// 6 of a kinds
+	"1:6": 6000,
 	"2:6": 1600,
 	"3:6": 2400,
 	"4:6": 3200,
@@ -64,8 +67,8 @@ func checkRun(dice map[string]int) bool {
 	}
 
 	for i := 1; i <= 6; i++ {
-		_, exists := dice[strconv.Itoa(i)]
-		if !exists {
+		die := dice[strconv.Itoa(i)]
+		if die != 1 {
 			return false
 		}
 	}
@@ -83,5 +86,5 @@ func check3pair(dice map[string]int) bool {
 			pairCount++
 		}
 	}
-	return pairCount == 3
+	return pairCount >= 3
 }
