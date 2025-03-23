@@ -38,7 +38,18 @@ func getRollCount(dice []string) map[string]int {
 		count[d]++
 	}
 
+	fmt.Printf("%+v\n", count)
 	return count
+}
+
+func takeValidDice(dice map[string]int) map[string]int {
+	valid := []string{}
+	for num, cnt := range dice {
+		if _, exists := scoreMap[fmt.Sprintf("%s:%d", num, cnt)]; exists {
+			valid = append(valid, num)
+		}
+	}
+	return getRollCount(valid)
 }
 
 func play(name string, currentScore int, diceCount int) int {
@@ -48,7 +59,6 @@ func play(name string, currentScore int, diceCount int) int {
 	fmt.Printf("Rolled: %s\n", strings.Join(dice, ", "))
 
 	if !hasOneOrFive(dice) {
-		fmt.Printf("%s rolled no 1s or 5s.\n", name)
 		return 0
 	}
 
@@ -65,16 +75,19 @@ func play(name string, currentScore int, diceCount int) int {
 	err := survey.AskOne(prompt, &keep, survey.WithValidator(survey.Required))
 	handleCtrlC(err)
 
-	keptDice := getRollCount(keep)
+	keptDice := takeValidDice(getRollCount(keep))
+	fmt.Printf("%+v\n", keptDice)
+
+	availDice := diceCount - len(keptDice)
 
 	if checkRun(keptDice) {
 		fmt.Printf("%s rolled a run!\n", name)
-		return play(name, currentScore+1000, diceCount-len(keep))
+		return play(name, currentScore+1000, availDice)
 	}
 
 	if check3pair(keptDice) {
 		fmt.Printf("%s rolled 3 pair!\n", name)
-		return play(name, currentScore+1000, diceCount-len(keep))
+		return play(name, currentScore+1000, availDice)
 	}
 
 	score := 0
@@ -82,5 +95,5 @@ func play(name string, currentScore int, diceCount int) int {
 		score += scoreMap[fmt.Sprintf("%s:%d", num, cnt)]
 	}
 
-	return play(name, currentScore+score, diceCount-len(keep))
+	return play(name, currentScore+score, availDice)
 }
