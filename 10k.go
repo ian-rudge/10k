@@ -6,6 +6,7 @@ func main() {
 	var p1, p2 = "", ""
 	p1Name, p2Name := setup()
 	p1Score, p2Score := 0, 0
+	p1OnBoard, p2OnBoard := false, false
 
 	printRollFirst()
 
@@ -34,15 +35,29 @@ func main() {
 
 	// play until someone reaches WIN_SCORE
 	for {
-		p1Score += play(p1, 0, ALL_DICE)
-		printRoundScore(p1, p1Score)
+		p1RoundScore := play(p1, 0, ALL_DICE)
+		if !p1OnBoard && p1RoundScore >= ON_BOARD_SCORE {
+			printOnBoard(p1)
+			p1OnBoard = true
+		}
+		if p1OnBoard {
+			p1Score += p1RoundScore
+			printRoundScore(p1, p1Score)
+		}
 
 		if p1Score >= WIN_SCORE {
 			break
 		}
 
-		p2Score += play(p2, 0, ALL_DICE)
-		printRoundScore(p2, p2Score)
+		p2RoundScore := play(p2, 0, ALL_DICE)
+		if !p2OnBoard && p2RoundScore >= ON_BOARD_SCORE {
+			printOnBoard(p2)
+			p2OnBoard = true
+		}
+		if p2OnBoard {
+			p2Score += p2RoundScore
+			printRoundScore(p2, p2Score)
+		}
 
 		if p2Score >= WIN_SCORE {
 			break

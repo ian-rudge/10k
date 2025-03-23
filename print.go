@@ -34,6 +34,10 @@ func printTurn(name string) {
 	color.Cyan("------------ %s's roll! ------------\n", name)
 }
 
+func printOnBoard(name string) {
+	color.Yellow("%s is on the board!\n", name)
+}
+
 func printScore(score int) {
 	color.Yellow("Current score: %d\n", score)
 }

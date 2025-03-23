@@ -7,6 +7,7 @@ import (
 
 var WIN_SCORE = 10000
 var ONE_THOUSAND = 1000
+var ON_BOARD_SCORE = 800
 
 var scoreMap = map[string]int{
 	// 1's
