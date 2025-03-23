@@ -20,7 +20,7 @@ func main() {
 		}
 
 		p2Score += play(p2Name, p2Score, 6)
-		printRoundScore(p1Name, p1Score)
+		printRoundScore(p2Name, p2Score)
 
 		if p2Score >= WIN_SCORE {
 			break
