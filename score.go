@@ -5,6 +5,9 @@ import (
 	"strconv"
 )
 
+var WIN_SCORE = 10000
+var ONE_THOUSAND = 1000
+
 var scoreMap = map[string]int{
 	// 1's
 	"1:1": 100,

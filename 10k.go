@@ -1,9 +1,5 @@
 package main
 
-import "fmt"
-
-var WIN_SCORE = 10000
-
 func main() {
 	printWelcome()
 
@@ -29,17 +25,17 @@ func main() {
 
 	// final round
 	if p1Score >= WIN_SCORE {
-		fmt.Printf("%s's final roll!\n", p2Name)
+		printFinalRoll(p2Name)
 		p2Score += play(p2Name, p2Score, 6)
 	} else if p2Score >= WIN_SCORE {
-		fmt.Printf("%s's final roll!\n", p1Name)
+		printFinalRoll(p1Name)
 		p1Score += play(p1Name, p1Score, 6)
 	}
 
 	// determine winner
 	if p1Score > p2Score {
-		fmt.Printf("%s wins!\n", p1Name)
+		printWinner(p1Name)
 	} else {
-		fmt.Printf("%s wins!\n", p2Name)
+		printWinner(p2Name)
 	}
 }

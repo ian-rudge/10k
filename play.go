@@ -5,10 +5,8 @@ import (
 	"math/rand/v2"
 	"slices"
 	"strconv"
-	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/fatih/color"
 )
 
 func roll(num int) []string {
@@ -28,6 +26,7 @@ func hasOneOrFive(dice []string) bool {
 	return false
 }
 
+// Returns a map of the count of each dice value
 func getRollCount(dice []string) map[string]int {
 	count := map[string]int{}
 
@@ -39,7 +38,7 @@ func getRollCount(dice []string) map[string]int {
 }
 
 func play(name string, currentScore int, diceCount int) int {
-	color.Cyan("------------ %s's roll! ------------\n", name)
+	printTurn(name)
 
 	if diceCount < 6 {
 		ans := ""
@@ -56,10 +55,10 @@ func play(name string, currentScore int, diceCount int) int {
 	}
 
 	dice := roll(diceCount)
-	color.Magenta("Rolled: %s\n\n", strings.Join(dice, ", "))
+	printRoll(dice)
 
 	if !hasOneOrFive(dice) {
-		color.Red("OOF! YOU BUSTED!\n")
+		printBust()
 		return 0
 	}
 
@@ -79,15 +78,17 @@ func play(name string, currentScore int, diceCount int) int {
 	keptDice := getRollCount(keep)
 
 	if checkRun(keptDice) {
-		color.Green("%s scored a run!\n", name)
-		printScore(currentScore + 1000)
-		return play(name, currentScore+1000, 6)
+		printRun(name)
+		updatedScore := currentScore + ONE_THOUSAND
+		printScore(updatedScore)
+		return play(name, updatedScore, 6)
 	}
 
 	if check3pair(keptDice) {
-		color.Green("%s scored 3 pairs!\n", name)
-		printScore(currentScore + 1000)
-		return play(name, currentScore+1000, 6)
+		print3pairs(name)
+		updatedScore := currentScore + ONE_THOUSAND
+		printScore(updatedScore)
+		return play(name, updatedScore, 6)
 	}
 
 	score, scoredDice := calculateScore(keptDice)
