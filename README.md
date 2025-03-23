@@ -8,3 +8,9 @@
 go get
 go run .
 ```
+
+## Testing
+
+```sh
+go test
+```
