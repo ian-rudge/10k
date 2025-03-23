@@ -1,18 +1,69 @@
 package main
 
 import (
-	"fmt"
 	"math/rand/v2"
-	"slices"
 	"strconv"
-
-	"github.com/AlecAivazis/survey/v2"
 )
+
+var ALL_DICE = 6
+
+func play(playerName string, currentScore int, diceCount int) int {
+	printTurn(playerName)
+
+	if diceCount < ALL_DICE {
+		ans := askDecision(diceCount)
+		if ans == "Stay" {
+			return currentScore
+		}
+	}
+
+	dice := roll(diceCount)
+	printRoll(dice)
+
+	_, potentialScoredDice := calculateScore(getRollCount(dice))
+	if potentialScoredDice == 0 {
+		printBust()
+		return 0
+	}
+
+	keep := askForScoringDice(dice)
+	keptDice := getRollCount(keep)
+
+	if checkRun(keptDice) {
+		printRun(playerName)
+		updatedScore := currentScore + ONE_THOUSAND
+		printScore(updatedScore)
+		return play(playerName, updatedScore, ALL_DICE)
+	}
+
+	if check3pair(keptDice) {
+		print3pairs(playerName)
+		updatedScore := currentScore + ONE_THOUSAND
+		printScore(updatedScore)
+		return play(playerName, updatedScore, ALL_DICE)
+	}
+
+	score, scoredDice := calculateScore(keptDice)
+	if scoredDice == 0 {
+		printBust()
+		return 0
+	}
+
+	updatedScore := currentScore + score
+	printScore(updatedScore)
+
+	if diceCount == scoredDice {
+		return play(playerName, updatedScore, ALL_DICE)
+	}
+
+	availDice := diceCount - scoredDice
+	return play(playerName, updatedScore, availDice)
+}
 
 func roll(num int) []string {
 	dice := make([]string, num)
 	for i := range dice {
-		dice[i] = strconv.Itoa(rand.IntN(6) + 1)
+		dice[i] = strconv.Itoa(rand.IntN(ALL_DICE) + 1)
 	}
 	return dice
 }
@@ -26,66 +77,4 @@ func getRollCount(dice []string) map[string]int {
 	}
 
 	return count
-}
-
-func play(name string, currentScore int, diceCount int) int {
-	printTurn(name)
-
-	if diceCount < 6 {
-		ans := ""
-		prompt := &survey.Select{
-			Message: fmt.Sprintf("You have %d dice left. Choose option:", diceCount),
-			Options: []string{"Roll", "Stay"},
-		}
-		err := survey.AskOne(prompt, &ans, survey.WithValidator(survey.Required))
-		handleCtrlC(err)
-
-		if ans == "Stay" {
-			return currentScore
-		}
-	}
-
-	dice := roll(diceCount)
-	printRoll(dice)
-
-	sortedDice := make([]string, len(dice))
-	copy(sortedDice, dice)
-	slices.Sort(sortedDice)
-
-	keep := []string{}
-	prompt := &survey.MultiSelect{
-		Message: "Choose scoring dice:",
-		Options: sortedDice,
-	}
-
-	err := survey.AskOne(prompt, &keep, survey.WithValidator(survey.Required))
-	handleCtrlC(err)
-
-	keptDice := getRollCount(keep)
-
-	if checkRun(keptDice) {
-		printRun(name)
-		updatedScore := currentScore + ONE_THOUSAND
-		printScore(updatedScore)
-		return play(name, updatedScore, 6)
-	}
-
-	if check3pair(keptDice) {
-		print3pairs(name)
-		updatedScore := currentScore + ONE_THOUSAND
-		printScore(updatedScore)
-		return play(name, updatedScore, 6)
-	}
-
-	score, scoredDice := calculateScore(keptDice)
-
-	if scoredDice == 0 {
-		printBust()
-		return 0
-	}
-
-	printScore(currentScore + score)
-	availDice := diceCount - scoredDice
-
-	return play(name, currentScore+score, availDice)
 }

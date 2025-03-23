@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-var WIN_SCORE = 10000
+var WIN_SCORE = 1000
 var ONE_THOUSAND = 1000
 
 var scoreMap = map[string]int{
@@ -47,21 +47,22 @@ var scoreMap = map[string]int{
 	"5:2": 100,
 }
 
-func calculateScore(dice map[string]int) (score int, numDiceScored int) {
+func calculateScore(dice map[string]int) (score int, scoredDice int) {
 	for num, cnt := range dice {
 		points, exists := scoreMap[fmt.Sprintf("%s:%d", num, cnt)]
 		if exists {
 			score += points
-			numDiceScored += cnt
+			scoredDice += cnt
 		}
 	}
-	return score, numDiceScored
+	return score, scoredDice
 }
 
 func checkRun(dice map[string]int) bool {
 	if len(dice) != 6 {
 		return false
 	}
+
 	for i := 1; i <= 6; i++ {
 		_, exists := dice[strconv.Itoa(i)]
 		if !exists {

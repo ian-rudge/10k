@@ -14,6 +14,18 @@ func printRoundScore(name string, score int) {
 	fmt.Println("")
 }
 
+func printRollFirst() {
+	fmt.Println("")
+	fmt.Println("Rolling to see who goes first.")
+	fmt.Println("")
+}
+
+func printPlayerRollFirst(name string) {
+	fmt.Println("")
+	fmt.Printf("%s rolls first!\n", name)
+	fmt.Println("")
+}
+
 func printWelcome() {
 	fmt.Println("Welcome to 10,000!")
 }
@@ -23,11 +35,15 @@ func printTurn(name string) {
 }
 
 func printScore(score int) {
-	color.Cyan("Current score: %d\n", score)
+	color.Yellow("Current score: %d\n", score)
+}
+
+func printFinalScore(name string, score int) {
+	color.Yellow("%s's final score: %d\n", name, score)
 }
 
 func printRoll(dice []string) {
-	color.Magenta("Rolled: %s\n\n", strings.Join(dice, ", "))
+	color.Magenta("Rolled: %s\n", strings.Join(dice, ", "))
 }
 
 func printBust() {
@@ -43,7 +59,8 @@ func print3pairs(name string) {
 }
 
 func printFinalRoll(name string) {
-	color.Cyan("%s's final roll!\n", name)
+	color.Red("%s's final roll!\n", name)
+	fmt.Println("")
 }
 
 func printWinner(name string) {
