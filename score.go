@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-var WIN_SCORE = 1000
+var WIN_SCORE = 10000
 var ONE_THOUSAND = 1000
 
 var scoreMap = map[string]int{
