@@ -8,11 +8,8 @@ import (
 	"strings"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/fatih/color"
 )
-
-func printRoundScore(name string, score int) {
-	fmt.Printf("%s's score: %d\n", name, score)
-}
 
 func roll(num int) []string {
 	dice := make([]string, num)
@@ -38,27 +35,31 @@ func getRollCount(dice []string) map[string]int {
 		count[d]++
 	}
 
-	fmt.Printf("%+v\n", count)
 	return count
 }
 
-func takeValidDice(dice map[string]int) map[string]int {
-	valid := []string{}
-	for num, cnt := range dice {
-		if _, exists := scoreMap[fmt.Sprintf("%s:%d", num, cnt)]; exists {
-			valid = append(valid, num)
+func play(name string, currentScore int, diceCount int) int {
+	color.Cyan("------------ %s's roll! ------------\n", name)
+
+	if diceCount < 6 {
+		ans := ""
+		prompt := &survey.Select{
+			Message: fmt.Sprintf("You have %d dice left. Choose option:", diceCount),
+			Options: []string{"Roll", "Stay"},
+		}
+		err := survey.AskOne(prompt, &ans, survey.WithValidator(survey.Required))
+		handleCtrlC(err)
+
+		if ans == "Stay" {
+			return currentScore
 		}
 	}
-	return getRollCount(valid)
-}
-
-func play(name string, currentScore int, diceCount int) int {
-	fmt.Printf("------ %s's roll! ------\n", name)
 
 	dice := roll(diceCount)
-	fmt.Printf("Rolled: %s\n", strings.Join(dice, ", "))
+	color.Magenta("Rolled: %s\n\n", strings.Join(dice, ", "))
 
 	if !hasOneOrFive(dice) {
+		color.Red("OOF! YOU BUSTED!\n")
 		return 0
 	}
 
@@ -75,25 +76,23 @@ func play(name string, currentScore int, diceCount int) int {
 	err := survey.AskOne(prompt, &keep, survey.WithValidator(survey.Required))
 	handleCtrlC(err)
 
-	keptDice := takeValidDice(getRollCount(keep))
-	fmt.Printf("%+v\n", keptDice)
-
-	availDice := diceCount - len(keptDice)
+	keptDice := getRollCount(keep)
 
 	if checkRun(keptDice) {
-		fmt.Printf("%s rolled a run!\n", name)
-		return play(name, currentScore+1000, availDice)
+		color.Green("%s scored a run!\n", name)
+		printScore(currentScore + 1000)
+		return play(name, currentScore+1000, 6)
 	}
 
 	if check3pair(keptDice) {
-		fmt.Printf("%s rolled 3 pair!\n", name)
-		return play(name, currentScore+1000, availDice)
+		color.Green("%s scored 3 pairs!\n", name)
+		printScore(currentScore + 1000)
+		return play(name, currentScore+1000, 6)
 	}
 
-	score := 0
-	for num, cnt := range keptDice {
-		score += scoreMap[fmt.Sprintf("%s:%d", num, cnt)]
-	}
+	score, scoredDice := calculateScore(keptDice)
+	printScore(currentScore + score)
+	availDice := diceCount - scoredDice
 
 	return play(name, currentScore+score, availDice)
 }

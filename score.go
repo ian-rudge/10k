@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 )
 
@@ -43,6 +44,17 @@ var scoreMap = map[string]int{
 	"5:2": 100,
 }
 
+func calculateScore(dice map[string]int) (score int, numDiceScored int) {
+	for num, cnt := range dice {
+		points, exists := scoreMap[fmt.Sprintf("%s:%d", num, cnt)]
+		if exists {
+			score += points
+			numDiceScored += cnt
+		}
+	}
+	return score, numDiceScored
+}
+
 func checkRun(dice map[string]int) bool {
 	if len(dice) != 6 {
 		return false
@@ -57,7 +69,7 @@ func checkRun(dice map[string]int) bool {
 }
 
 func check3pair(dice map[string]int) bool {
-	if len(dice) != 6 {
+	if len(dice) < 3 {
 		return false
 	}
 
