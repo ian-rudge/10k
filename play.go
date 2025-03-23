@@ -17,15 +17,6 @@ func roll(num int) []string {
 	return dice
 }
 
-func hasOneOrFive(dice []string) bool {
-	for _, num := range dice {
-		if num == "1" || num == "5" {
-			return true
-		}
-	}
-	return false
-}
-
 // Returns a map of the count of each dice value
 func getRollCount(dice []string) map[string]int {
 	count := map[string]int{}
@@ -57,11 +48,6 @@ func play(name string, currentScore int, diceCount int) int {
 	dice := roll(diceCount)
 	printRoll(dice)
 
-	if !hasOneOrFive(dice) {
-		printBust()
-		return 0
-	}
-
 	sortedDice := make([]string, len(dice))
 	copy(sortedDice, dice)
 	slices.Sort(sortedDice)
@@ -92,6 +78,12 @@ func play(name string, currentScore int, diceCount int) int {
 	}
 
 	score, scoredDice := calculateScore(keptDice)
+
+	if scoredDice == 0 {
+		printBust()
+		return 0
+	}
+
 	printScore(currentScore + score)
 	availDice := diceCount - scoredDice
 
