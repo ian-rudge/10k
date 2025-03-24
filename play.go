@@ -7,6 +7,24 @@ import (
 
 var ALL_DICE = 6
 
+func playRound(playerName string, playerScore *int, onBoard *bool) bool {
+	roundScore := play(playerName, 0, ALL_DICE)
+	if !*onBoard && roundScore >= ON_BOARD_SCORE {
+		printOnBoard(playerName)
+		*onBoard = true
+	}
+	if *onBoard {
+		*playerScore += roundScore
+		printRoundScore(playerName, *playerScore)
+	}
+
+	if *playerScore >= WIN_SCORE {
+		return true
+	}
+
+	return false
+}
+
 func play(playerName string, currentScore int, diceCount int) int {
 	printTurn(playerName)
 
