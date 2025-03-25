@@ -7,8 +7,15 @@ import (
 
 var ALL_DICE = 6
 
+func rollForFirstTurn(playerName string) []string {
+	printTurn(playerName)
+	roll := roll(1)
+	printRoll(roll)
+	return roll
+}
+
 func playRound(playerName string, playerScore *int, onBoard *bool) bool {
-	roundScore := play(playerName, 0, ALL_DICE)
+	roundScore := playGame(playerName, 0, ALL_DICE)
 	if !*onBoard && roundScore >= ON_BOARD_SCORE {
 		printOnBoard(playerName)
 		*onBoard = true
@@ -25,7 +32,7 @@ func playRound(playerName string, playerScore *int, onBoard *bool) bool {
 	return false
 }
 
-func play(playerName string, currentScore int, diceCount int) int {
+func playGame(playerName string, currentScore int, diceCount int) int {
 	printTurn(playerName)
 
 	if diceCount < ALL_DICE {
@@ -51,14 +58,14 @@ func play(playerName string, currentScore int, diceCount int) int {
 		printRun(playerName)
 		updatedScore := currentScore + ONE_THOUSAND
 		printScore(updatedScore)
-		return play(playerName, updatedScore, ALL_DICE)
+		return playGame(playerName, updatedScore, ALL_DICE)
 	}
 
 	if check3pair(keptDice) {
 		print3pairs(playerName)
 		updatedScore := currentScore + ONE_THOUSAND
 		printScore(updatedScore)
-		return play(playerName, updatedScore, ALL_DICE)
+		return playGame(playerName, updatedScore, ALL_DICE)
 	}
 
 	score, scoredDice := calculateScore(keptDice)
@@ -71,11 +78,11 @@ func play(playerName string, currentScore int, diceCount int) int {
 	printScore(updatedScore)
 
 	if diceCount == scoredDice {
-		return play(playerName, updatedScore, ALL_DICE)
+		return playGame(playerName, updatedScore, ALL_DICE)
 	}
 
 	availDice := diceCount - scoredDice
-	return play(playerName, updatedScore, availDice)
+	return playGame(playerName, updatedScore, availDice)
 }
 
 func roll(num int) []string {

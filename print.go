@@ -69,6 +69,10 @@ func printFinalRoll(name string) {
 	fmt.Println("")
 }
 
+func printTie() {
+	color.Green("It's a tie!\n")
+}
+
 func printWinner(name string) {
 	color.Green("%s wins!\n", name)
 }

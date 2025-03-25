@@ -10,30 +10,20 @@ func main() {
 
 	printRollFirst()
 
-	// determine who goes first
 	for {
-		printTurn(p1Name)
-		p1Roll := roll(1)
-		printRoll(p1Roll)
-
-		printTurn(p2Name)
-		p2Roll := roll(1)
-		printRoll(p2Roll)
-
+		p1Roll, p2Roll := rollForFirstTurn(p1Name), rollForFirstTurn(p2Name)
 		if p1Roll[0] > p2Roll[0] {
-			p1 = p1Name
-			p2 = p2Name
-			printPlayerRollFirst(p1Name)
+			p1, p2 = p1Name, p2Name
 			break
-		} else if p2Roll[0] > p1Roll[0] {
-			p1 = p2Name
-			p2 = p1Name
-			printPlayerRollFirst(p2Name)
+		}
+		if p2Roll[0] > p1Roll[0] {
+			p1, p2 = p2Name, p1Name
 			break
 		}
 	}
 
-	// play until someone reaches WIN_SCORE
+	printPlayerRollFirst(p1)
+
 	for {
 		if playRound(p1, &p1Score, &p1OnBoard) {
 			break
@@ -46,17 +36,18 @@ func main() {
 	// final round
 	if p1Score >= WIN_SCORE {
 		printFinalRoll(p2)
-		p2Score += play(p2, 0, ALL_DICE)
+		p2Score += playGame(p2, 0, ALL_DICE)
 	} else if p2Score >= WIN_SCORE {
 		printFinalRoll(p1)
-		p1Score += play(p1, 0, ALL_DICE)
+		p1Score += playGame(p1, 0, ALL_DICE)
 	}
 
-	// determine winner
 	if p1Score > p2Score {
 		printWinner(p1)
-	} else {
+	} else if p2Score > p1Score {
 		printWinner(p2)
+	} else {
+		printTie()
 	}
 
 	printFinalScore(p1, p1Score)
