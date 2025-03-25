@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 )
 
@@ -27,7 +28,8 @@ func printPlayerRollFirst(name string) {
 }
 
 func printWelcome() {
-	fmt.Println("Welcome to 10,000!")
+	figure.NewColorFigure("10k!", "", "green", true).Print()
+	fmt.Println("")
 }
 
 func printTurn(name string) {
