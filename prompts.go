@@ -7,6 +7,15 @@ import (
 	"github.com/AlecAivazis/survey/v2"
 )
 
+func promptForName(message string) (name string) {
+	prompt := &survey.Input{
+		Message: message,
+	}
+	err := survey.AskOne(prompt, &name)
+	handleCtrlC(err)
+	return name
+}
+
 func askForScoringDice(dice []string) []string {
 	sortedDice := append([]string{}, dice...)
 	slices.Sort(sortedDice)

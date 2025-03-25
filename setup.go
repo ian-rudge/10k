@@ -1,21 +1,15 @@
 package main
 
 import (
-	"github.com/AlecAivazis/survey/v2"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
+func toTitleCase(s string) string {
+	return cases.Title(language.English).String(s)
+}
+
 func setup() (p1Name string, p2Name string) {
-	p1Prompt := &survey.Input{
-		Message: "Player 1 name",
-	}
-	err := survey.AskOne(p1Prompt, &p1Name)
-	handleCtrlC(err)
-
-	p2Prompt := &survey.Input{
-		Message: "Player 2 name",
-	}
-	err = survey.AskOne(p2Prompt, &p2Name)
-	handleCtrlC(err)
-
-	return p1Name, p2Name
+	p1Name, p2Name = promptForName("Player 1 name"), promptForName("Player 2 name")
+	return toTitleCase(p1Name), toTitleCase(p2Name)
 }
