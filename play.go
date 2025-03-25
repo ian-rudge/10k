@@ -96,10 +96,8 @@ func roll(num int) []string {
 // Returns a map of the count of each dice value
 func getRollCount(dice []string) map[string]int {
 	count := map[string]int{}
-
 	for _, d := range dice {
 		count[d]++
 	}
-
 	return count
 }
