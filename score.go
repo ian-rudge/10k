@@ -15,7 +15,7 @@ var scoreMap = map[string]int{
 	"1:2": 200,
 
 	// 3 of a kinds
-	"1:3": 1000,
+	"1:3": ONE_THOUSAND,
 	"2:3": 200,
 	"3:3": 300,
 	"4:3": 400,
@@ -27,7 +27,7 @@ var scoreMap = map[string]int{
 	"2:4": 400,
 	"3:4": 600,
 	"4:4": 800,
-	"5:4": 1000,
+	"5:4": ONE_THOUSAND,
 	"6:4": 1200,
 
 	// 5 of a kinds
@@ -49,6 +49,26 @@ var scoreMap = map[string]int{
 	// 5's
 	"5:1": 50,
 	"5:2": 100,
+}
+
+func getScoringRollsText(dice map[string]int) (moves []string) {
+	for num, cnt := range dice {
+		_, exists := scoreMap[fmt.Sprintf("%s:%d", num, cnt)]
+		if !exists {
+			continue
+		}
+
+		switch {
+		case cnt == 1:
+			moves = append(moves, fmt.Sprintf("Single (%s)", num))
+		case cnt == 2:
+			moves = append(moves, fmt.Sprintf("Pair (%s)", num))
+		case cnt >= 3:
+			moves = append(moves, fmt.Sprintf("%d of a kind (%s)", cnt, num))
+		}
+	}
+
+	return moves
 }
 
 func calculateScore(dice map[string]int) (score int, scoredDice int) {

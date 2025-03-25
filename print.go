@@ -8,22 +8,35 @@ import (
 	"github.com/fatih/color"
 )
 
-func printRoundScore(name string, score int) {
+var system = color.New(color.FgWhite).PrintfFunc()
+var info = color.New(color.FgCyan).PrintfFunc()
+var success = color.New(color.FgGreen).PrintfFunc()
+var warning = color.New(color.FgYellow).PrintfFunc()
+var danger = color.New(color.FgRed).PrintfFunc()
+
+func printRoundOverScore(name string, score int) {
 	fmt.Println("")
-	color.Green("ROUND OVER\n")
-	color.Green("%s's score: %d\n", name, score)
+	success("------------ ROUND OVER  ------------\n")
+	printTotalScore(name, score)
+	fmt.Println("")
+}
+
+func printRoundOverOnBoard(name string) {
+	fmt.Println("")
+	success("------------ ROUND OVER! ------------\n")
+	warning("%s needs to score %d to get on the board!\n", name, ON_BOARD_SCORE)
 	fmt.Println("")
 }
 
 func printRollFirst() {
 	fmt.Println("")
-	fmt.Println("Rolling to see who goes first.")
+	system("Rolling to see who goes first.\n")
 	fmt.Println("")
 }
 
 func printPlayerRollFirst(name string) {
 	fmt.Println("")
-	fmt.Printf("%s rolls first!\n", name)
+	system("%s rolls first!\n", name)
 	fmt.Println("")
 }
 
@@ -33,46 +46,54 @@ func printWelcome() {
 }
 
 func printTurn(name string) {
-	color.Cyan("------------ %s's roll! ------------\n", name)
+	system("------------ %s's roll! ------------\n", name)
 }
 
-func printOnBoard(name string) {
-	color.Yellow("%s is on the board!\n", name)
+func printTotalScore(name string, score int) {
+	success("%s's total score: %d\n", name, score)
 }
 
-func printScore(score int) {
-	color.Yellow("Current score: %d\n", score)
+func printRoundScore(score int) {
+	info("Round score: %d\n", score)
 }
 
 func printFinalScore(name string, score int) {
-	color.Yellow("%s's final score: %d\n", name, score)
+	info("%s's final score: %d\n", name, score)
 }
 
 func printRoll(dice []string) {
-	color.Magenta("Rolled: %s\n", strings.Join(dice, ", "))
+	info("Rolled: %s\n", strings.Join(dice, ", "))
 }
 
-func printBust() {
-	color.Red("OOF! YOU BUSTED!\n")
+func printBust(lostScore int) {
+	if lostScore > 0 {
+		danger("OOF! You busted and lost %d points!\n", lostScore)
+	} else {
+		danger("OOF! You busted!\n")
+	}
 }
 
 func printRun(name string) {
-	color.Green("%s scored a run!\n", name)
+	success("%s scored a run!\n", name)
+}
+
+func printScoringRolls(name string, rolls []string) {
+	success("%s scored %s\n", name, strings.Join(rolls, ", "))
 }
 
 func print3pairs(name string) {
-	color.Green("%s scored 3 pairs!\n", name)
+	success("%s scored 3 pairs!\n", name)
 }
 
 func printFinalRoll(name string) {
-	color.Red("%s's final roll!\n", name)
+	info("%s's final roll!\n", name)
 	fmt.Println("")
 }
 
 func printTie() {
-	color.Green("It's a tie!\n")
+	success("It's a tie!\n")
 }
 
 func printWinner(name string) {
-	color.Green("%s wins!\n", name)
+	success("%s wins!\n", name)
 }

@@ -25,7 +25,6 @@ func askForScoringDice(dice []string) []string {
 		Message: "Choose scoring dice:",
 		Options: sortedDice,
 	}
-	fmt.Println("")
 	err := survey.AskOne(prompt, &keep, survey.WithValidator(survey.Required))
 	handleCtrlC(err)
 
@@ -38,7 +37,6 @@ func askDecision(diceCount int) string {
 		Message: fmt.Sprintf("You have %d dice left. Choose option:", diceCount),
 		Options: []string{"Roll", "Stay"},
 	}
-	fmt.Println("")
 	err := survey.AskOne(prompt, &ans, survey.WithValidator(survey.Required))
 	handleCtrlC(err)
 

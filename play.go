@@ -15,14 +15,17 @@ func rollForFirstTurn(playerName string) []string {
 }
 
 func playRound(playerName string, playerScore *int, onBoard *bool) bool {
+	printTurn(playerName)
+	printTotalScore(playerName, *playerScore)
 	roundScore := playGame(playerName, 0, ALL_DICE)
 	if !*onBoard && roundScore >= ON_BOARD_SCORE {
-		printOnBoard(playerName)
 		*onBoard = true
 	}
 	if *onBoard {
 		*playerScore += roundScore
-		printRoundScore(playerName, *playerScore)
+		printRoundOverScore(playerName, *playerScore)
+	} else {
+		printRoundOverOnBoard(playerName)
 	}
 
 	if *playerScore >= WIN_SCORE {
@@ -33,7 +36,7 @@ func playRound(playerName string, playerScore *int, onBoard *bool) bool {
 }
 
 func playGame(playerName string, currentScore int, diceCount int) int {
-	printTurn(playerName)
+	printRoundScore(currentScore)
 
 	if diceCount < ALL_DICE {
 		ans := askDecision(diceCount)
@@ -47,7 +50,7 @@ func playGame(playerName string, currentScore int, diceCount int) int {
 
 	_, potentialScoredDice := calculateScore(getRollCount(dice))
 	if potentialScoredDice == 0 {
-		printBust()
+		printBust(currentScore)
 		return 0
 	}
 
@@ -57,25 +60,24 @@ func playGame(playerName string, currentScore int, diceCount int) int {
 	if checkRun(keptDice) {
 		printRun(playerName)
 		updatedScore := currentScore + ONE_THOUSAND
-		printScore(updatedScore)
 		return playGame(playerName, updatedScore, ALL_DICE)
 	}
 
 	if check3pair(keptDice) {
 		print3pairs(playerName)
 		updatedScore := currentScore + ONE_THOUSAND
-		printScore(updatedScore)
 		return playGame(playerName, updatedScore, ALL_DICE)
 	}
 
 	score, scoredDice := calculateScore(keptDice)
 	if scoredDice == 0 {
-		printBust()
+		printBust(currentScore)
 		return 0
 	}
 
+	printScoringRolls(playerName, getScoringRollsText(keptDice))
+
 	updatedScore := currentScore + score
-	printScore(updatedScore)
 
 	if diceCount == scoredDice {
 		return playGame(playerName, updatedScore, ALL_DICE)
